@@ -107793,7 +107793,8 @@ const ISSUES_PULL_COUNT = 100;
 class GithubHandler {
     constructor(token) {
         this.token = token;
-        this.client = (0, github_1.getOctokit)(token);
+        const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
+        this.client = (0, github_1.getOctokit)(token, { baseUrl });
     }
     getVeracodeLabel() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -108043,6 +108044,10 @@ const syncExistingOpenIssues = (options) => __awaiter(void 0, void 0, void 0, fu
     core.info('check if we run on a pull request');
     let pullRequest = process.env.GITHUB_REF;
     let isPR = pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.indexOf("pull");
+    const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
+    const customRequest = request.defaults({
+        baseUrl
+    });
     for (var key in librariesWithIssues) {
         core.info('Library ' + key + ' - ' + librariesWithIssues[key]['lib']['name']);
         var issueLength = Object.keys(librariesWithIssues[key]['issues']).length;
@@ -108073,7 +108078,7 @@ const syncExistingOpenIssues = (options) => __awaiter(void 0, void 0, void 0, fu
                     const repo = github.context.repo.repo;
                     var pr_link = `Veracode issue link to PR: https://github.com/` + owner + `/` + repo + `/pull/` + pr_commentID;
                     console.log('Adding PR to the issue now.');
-                    yield request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+                    yield customRequest('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
                         headers: {
                             authorization: authToken
                         },
@@ -108100,7 +108105,7 @@ const syncExistingOpenIssues = (options) => __awaiter(void 0, void 0, void 0, fu
                     const repo = github.context.repo.repo;
                     var pr_link = `Veracode issue link to PR: https://github.com/` + owner + `/` + repo + `/pull/` + pr_commentID;
                     console.log('Adding PR to the issue now.');
-                    yield request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+                    yield customRequest('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
                         headers: {
                             authorization: authToken
                         },
@@ -108364,7 +108369,8 @@ function runAction(options) {
                         let pr_header = '<br>![](https://www.veracode.com/themes/veracode_new/library/img/veracode-black-hires.svg)<br>';
                         summary_message = `Veracode SCA Scan finished with exit code: ${code}. Please review created and linked issues`;
                         try {
-                            const octokit = github.getOctokit(options.github_token);
+                            const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
+                            const octokit = github.getOctokit(options.github_token, { baseUrl });
                             const { data: comment } = yield octokit.rest.issues.createComment({
                                 owner: repo[0],
                                 repo: repo[1],
@@ -108490,7 +108496,8 @@ function runAction(options) {
                         commentBody += output; //.replace(/    /g, '&nbsp;&nbsp;&nbsp;&nbsp;');
                         commentBody += '</p></details>\n</pre>';
                         try {
-                            const octokit = github.getOctokit(options.github_token);
+                            const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
+                            const octokit = github.getOctokit(options.github_token, { baseUrl });
                             const { data: comment } = yield octokit.rest.issues.createComment({
                                 owner: repo[0],
                                 repo: repo[1],

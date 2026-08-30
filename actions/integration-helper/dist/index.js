@@ -85680,8 +85680,10 @@ async function validateVeracodeApiCreds(inputs) {
         owner: repo[0],
         repo: repo[1],
     };
+    const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
     const octokit = new rest_1.Octokit({
         auth: inputs.token,
+        baseUrl: baseUrl
     });
     const checkStatic = {
         owner: ownership.owner,
@@ -85741,8 +85743,10 @@ async function validatePolicyName(inputs) {
         owner: repo[0],
         repo: repo[1],
     };
+    const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
     const octokit = new rest_1.Octokit({
         auth: inputs.token,
+        baseUrl: baseUrl
     });
     const checkStatic = {
         owner: ownership.owner,
@@ -86243,8 +86247,10 @@ async function preparePipelineResults(inputs) {
         check_run_id: inputs.check_run_id,
         status: Checks.Status.Completed,
     };
+    const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
     const octokit = new rest_1.Octokit({
         auth: inputs.token,
+        baseUrl: baseUrl
     });
     if (!(0, inputs_1.vaildateScanResultsActionInput)(inputs)) {
         core.setFailed('token, check_run_id and source_repository are required.');
@@ -86468,8 +86474,10 @@ const check_service_1 = __nccwpck_require__(42450);
 const app_config_1 = __importDefault(__nccwpck_require__(971));
 const http = __importStar(__nccwpck_require__(37542));
 async function preparePolicyResults(inputs) {
+    const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
     const octokit = new rest_1.Octokit({
         auth: inputs.token,
+        baseUrl: baseUrl
     });
     const repo = inputs.source_repository.split('/');
     const ownership = {
